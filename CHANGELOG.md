@@ -1,3 +1,2 @@
-### Updated:
-- fabric loader to 0.19.2
-- fabric loom to 1.15
+### Fixed:
+- server crash `// changed client import to player entity`
