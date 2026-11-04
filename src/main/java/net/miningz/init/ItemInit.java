@@ -18,23 +18,22 @@ public class ItemInit {
 
     public static final RegistryKey<ItemGroup> MININGZ_ITEM_GROUP = RegistryKey.of(RegistryKeys.ITEM_GROUP, MiningMain.identifierOf("item_group"));
 
-    public static final Item COPPER_PROSPECTOR_PICK = register("copper_prospector_pick", new ProspectorPick(10, new Item.Settings().maxDamage(190)), MININGZ_ITEM_GROUP);
-    public static final Item GOLDEN_PROSPECTOR_PICK = register("golden_prospector_pick", new ProspectorPick(15, new Item.Settings().maxDamage(32)), MININGZ_ITEM_GROUP);
-    public static final Item IRON_PROSPECTOR_PICK = register("iron_prospector_pick", new ProspectorPick(20, new Item.Settings().maxDamage(250)), MININGZ_ITEM_GROUP);
-    public static final Item DIAMOND_PROSPECTOR_PICK = register("diamond_prospector_pick", new ProspectorPick(25, new Item.Settings().maxDamage(1561)), MININGZ_ITEM_GROUP);
-    public static final Item NETHERITE_PROSPECTOR_PICK = register("netherite_prospector_pick", new ProspectorPick(30, new Item.Settings().maxDamage(2031)), MININGZ_ITEM_GROUP);
-
-    private static Item register(String id, Item item, RegistryKey<ItemGroup> itemGroup) {
-        return register(MiningMain.identifierOf(id), item, itemGroup);
-    }
-
-    private static Item register(Identifier id, Item item, RegistryKey<ItemGroup> itemGroup) {
-        ItemGroupEvents.modifyEntriesEvent(itemGroup).register(entries -> entries.add(item));
-        return Registry.register(Registries.ITEM, id, item);
-    }
+    public static final Item COPPER_PROSPECTOR_PICK = Registry.register(Registries.ITEM, MiningMain.identifierOf("copper_prospector_pick"), new ProspectorPick(10, new Item.Settings().maxDamage(190)));
+    public static final Item GOLDEN_PROSPECTOR_PICK = Registry.register(Registries.ITEM, MiningMain.identifierOf("golden_prospector_pick"), new ProspectorPick(15, new Item.Settings().maxDamage(32)));
+    public static final Item IRON_PROSPECTOR_PICK = Registry.register(Registries.ITEM, MiningMain.identifierOf("iron_prospector_pick"), new ProspectorPick(20, new Item.Settings().maxDamage(250)));
+    public static final Item DIAMOND_PROSPECTOR_PICK = Registry.register(Registries.ITEM, MiningMain.identifierOf("diamond_prospector_pick"), new ProspectorPick(25, new Item.Settings().maxDamage(1561)));
+    public static final Item NETHERITE_PROSPECTOR_PICK = Registry.register(Registries.ITEM, MiningMain.identifierOf("netherite_prospector_pick"), new ProspectorPick(30, new Item.Settings().maxDamage(2031)));
 
     public static void init() {
         Registry.register(Registries.ITEM_GROUP, MININGZ_ITEM_GROUP,
                 FabricItemGroup.builder().icon(() -> new ItemStack(ItemInit.NETHERITE_PROSPECTOR_PICK)).displayName(Text.translatable("item.miningz.item_group")).build());
+
+        ItemGroupEvents.modifyEntriesEvent(MININGZ_ITEM_GROUP).register(entries -> {
+            entries.add(COPPER_PROSPECTOR_PICK);
+            entries.add(GOLDEN_PROSPECTOR_PICK);
+            entries.add(IRON_PROSPECTOR_PICK);
+            entries.add(DIAMOND_PROSPECTOR_PICK);
+            entries.add(NETHERITE_PROSPECTOR_PICK);
+        });
     }
 }

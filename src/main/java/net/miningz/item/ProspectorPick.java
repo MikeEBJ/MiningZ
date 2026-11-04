@@ -2,9 +2,9 @@ package net.miningz.item;
 
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBlockTags;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
@@ -58,16 +58,23 @@ public class ProspectorPick extends Item {
                 }
             }
         }
-        if (world.isClient() && context.getPlayer() instanceof ClientPlayerEntity clientPlayerEntity) {
-            ((ClientPlayerEntityAccess) clientPlayerEntity).miningZ$setProspectorBlocks(blockIds);
-            BlockSoundGroup blockSoundGroup = context.getWorld().getBlockState(blockPos).getSoundGroup();
 
-            context.getWorld().playSound(clientPlayerEntity, blockPos, blockSoundGroup.getHitSound(), SoundCategory.BLOCKS, (blockSoundGroup.getVolume() + 1.0F) / 6.0F,
-                    blockSoundGroup.getPitch() * 0.5F);
+        PlayerEntity player = context.getPlayer();
+        if (world.isClient() && player != null) {
+            // Use your mixin interface directly without importing ClientPlayerEntity
+            if (player instanceof ClientPlayerEntityAccess clientAccess) {
+                clientAccess.miningZ$setProspectorBlocks(blockIds);
+            }
+
+            BlockSoundGroup blockSoundGroup = world.getBlockState(blockPos).getSoundGroup();
+            world.playSound(player, blockPos, blockSoundGroup.getHitSound(), SoundCategory.BLOCKS,
+                    (blockSoundGroup.getVolume() + 1.0F) / 6.0F, blockSoundGroup.getPitch() * 0.5F);
         }
-        if (!world.isClient()) {
-            context.getStack().damage(1, context.getPlayer(), EquipmentSlot.MAINHAND);
+
+        if (!world.isClient() && player != null) {
+            context.getStack().damage(1, player, EquipmentSlot.MAINHAND);
         }
+
         return ActionResult.success(world.isClient());
     }
 
@@ -84,5 +91,4 @@ public class ProspectorPick extends Item {
         }
         return true;
     }
-
 }
